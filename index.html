@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturing Operations Presentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: modalopen 0.4s;
+        }
+        @keyframes modalopen {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .process-step {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 20px;
+        }
+        .process-step:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background-color: #3b82f6;
+            border-radius: 50%;
+        }
+        .process-connector {
+            position: absolute;
+            left: 9px;
+            top: 20px;
+            bottom: -20px;
+            width: 2px;
+            background-color: #3b82f6;
+        }
+        .meeting-card {
+            transition: all 0.3s ease;
+        }
+        .meeting-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-blue-600 mb-2">
+                <i class="fas fa-industry mr-2"></i>
+                Manufacturing Operations Overview
+            </h1>
+            <p class="text-lg text-gray-600">From procurement to production and quality control</p>
+        </header>
+
+        <!-- Navigation Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            <!-- Production Line -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300" onclick="openModal('productionModal')">
+                <div class="h-48 bg-blue-100 flex items-center justify-center">
+                    <i class="fas fa-cogs text-6xl text-blue-500"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Production Line</h3>
+                    <p class="text-gray-600">How our manufacturing process works from start to finish</p>
+                </div>
+            </div>
+
+            <!-- Warehouse & Logistics -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300" onclick="openModal('warehouseModal')">
+                <div class="h-48 bg-green-100 flex items-center justify-center">
+                    <i class="fas fa-warehouse text-6xl text-green-500"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Warehouse & Logistics</h3>
+                    <p class="text-gray-600">Storage, inventory management and material flow</p>
+                </div>
+            </div>
+
+            <!-- Quality Procedures -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300" onclick="openModal('qualityModal')">
+                <div class="h-48 bg-purple-100 flex items-center justify-center">
+                    <i class="fas fa-clipboard-check text-6xl text-purple-500"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Quality Procedures</h3>
+                    <p class="text-gray-600">Our quality control measures and common issues</p>
+                </div>
+            </div>
+
+            <!-- Purchase Orders -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300" onclick="openModal('poModal')">
+                <div class="h-48 bg-yellow-100 flex items-center justify-center">
+                    <i class="fas fa-file-invoice-dollar text-6xl text-yellow-500"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Purchase Orders</h3>
+                    <p class="text-gray-600">Managing buyer requirements and deadlines</p>
+                </div>
+            </div>
+
+            <!-- Operational Challenges -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300" onclick="openModal('challengesModal')">
+                <div class="h-48 bg-red-100 flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-6xl text-red-500"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Operational Challenges</h3>
+                    <p class="text-gray-600">Common production delays and staff issues</p>
+                </div>
+            </div>
+
+            <!-- Meetings & Communication -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300" onclick="openModal('meetingsModal')">
+                <div class="h-48 bg-indigo-100 flex items-center justify-center">
+                    <i class="fas fa-users text-6xl text-indigo-500"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Meetings & Communication</h3>
+                    <p class="text-gray-600">Types of meetings and professional interactions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Personnel Section -->
+        <section class="mb-16">
+            <div class="section-title rounded-lg px-6 py-3 mb-6 text-white flex items-center">
+                <i class="fas fa-user-tie text-2xl mr-3"></i>
+                <h2 class="text-2xl font-bold">Key Personnel & Responsibilities</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-hard-hat text-blue-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800">Production Manager</h3>
+                    </div>
+                    <ul class="text-gray-600 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Oversees entire production process</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Manages production schedules</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Coordinates with other departments</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-boxes text-green-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800">Warehouse Supervisor</h3>
+                    </div>
+                    <ul class="text-gray-600 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Manages inventory levels</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Oversees material storage</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Coordinates logistics</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-purple-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-microscope text-purple-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800">Quality Control Inspector</h3>
+                    </div>
+                    <ul class="text-gray-600 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Conducts quality checks</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Documents defects</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Recommends improvements</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-yellow-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-file-contract text-yellow-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800">Purchasing Officer</h3>
+                    </div>
+                    <ul class="text-gray-600 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Processes purchase orders</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Liaises with suppliers</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Tracks order fulfillment</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-red-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-tools text-red-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800">Maintenance Technician</h3>
+                    </div>
+                    <ul class="text-gray-600 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Maintains production equipment</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Performs routine checks</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Responds to breakdowns</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-indigo-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-truck text-indigo-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800">Logistics Coordinator</h3>
+                    </div>
+                    <ul class="text-gray-600 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Arranges product shipments</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Coordinates with carriers</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Manages delivery schedules</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm mt-12 pt-6 border-t border-gray-200">
+            <p>Manufacturing Operations Presentation</p>
+            <p class="mt-1">© <span id="year"></span> Industrial Training Resources</p>
+        </footer>
+    </div>
+
+    <!-- Production Line Modal -->
+    <div id="productionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('productionModal')">&times;</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-cogs mr-2 text-blue-500"></i>
+                Production Line Process
+            </h2>
+            
+            <div class="bg-gray-50 p-6 rounded-lg mb-6">
+                <h3 class="text-lg font-bold text-gray-700 mb-3">Standard Production Flow</h3>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">1. Raw Material Preparation</h4>
+                    <p class="text-gray-600 ml-6">Materials are checked, sorted, and prepared for production</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">2. Assembly/Manufacturing</h4>
+                    <p class="text-gray-600 ml-6">Components are assembled or processed according to specifications</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">3. In-Process Quality Checks</h4>
+                    <p class="text-gray-600 ml-6">Random samples are tested during production</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">4. Finishing/Treatment</h4>
+                    <p class="text-gray-600 ml-6">Products receive final treatments (painting, polishing, etc.)</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">5. Final Quality Inspection</h4>
+                    <p class="text-gray-600 ml-6">Completed products undergo thorough inspection</p>
+                </div>
+                
+                <div class="process-step">
+                    <h4 class="font-semibold text-gray-800">6. Packaging & Labeling</h4>
+                    <p class="text-gray-600 ml-6">Products are packaged according to customer requirements</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                    <h4 class="font-bold text-gray-700 mb-2">Key Equipment</h4>
+                    <ul class="text-gray-600 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-caret-right text-blue-500 mt-1 mr-2"></i>
+                            <span>Assembly line conveyors</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-caret-right text-blue-500 mt-1 mr-2"></i>
+                            <span>CNC machines</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-caret-right text-blue-500 mt-1 mr-2"></i>
+                            <span>Injection molding machines</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-caret-right text-blue-500 mt-1 mr-2"></i>
+                            <span>Welding stations</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-caret-right text-blue-500 mt-1 mr-2"></i>
+                            <span>Packaging machines</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                    <h4 class="font-bold text-gray-700 mb-2">Production Metrics</h4>
+                    <ul class="text-gray-600 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-chart-line text-green-500 mt-1 mr-2"></i>
+                            <span>Daily output: 1,200 units</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-clock text-yellow-500 mt-1 mr-2"></i>
+                            <span>Cycle time: 2.5 minutes/unit</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>First-pass yield: 94%</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-tachometer-alt text-red-500 mt-1 mr-2"></i>
+                            <span>OEE (Overall Equipment Effectiveness): 82%</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warehouse & Logistics Modal -->
+    <div id="warehouseModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('warehouseModal')">&times;</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-warehouse mr-2 text-green-500"></i>
+                Warehouse & Logistics Management
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Warehouse Layout</h3>
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="flex items-center mb-3">
+                            <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                            <span class="text-sm">Receiving Area</span>
+                        </div>
+                        <div class="flex items-center mb-3">
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                            <span class="text-sm">Bulk Storage</span>
+                        </div>
+                        <div class="flex items-center mb-3">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                            <span class="text-sm">Picking Area</span>
+                        </div>
+                        <div class="flex items-center mb-3">
+                            <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                            <span class="text-sm">Shipping Area</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+                            <span class="text-sm">Quality Hold</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Inventory Management</h3>
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <ul class="text-gray-600 space-y-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-barcode text-blue-500 mt-1 mr-2"></i>
+                                <span>Barcode scanning system</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-archive text-green-500 mt-1 mr-2"></i>
+                                <span>FIFO (First In, First Out) system</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-exclamation-triangle text-yellow-500 mt-1 mr-2"></i>
+                                <span>Minimum stock level alerts</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-calendar-check text-red-500 mt-1 mr-2"></i>
+                                <span>Monthly cycle counts</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-lg font-bold text-gray-700 mb-3">Logistics Flow</h3>
+            <div class="bg-gray-50 p-6 rounded-lg mb-6">
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">1. Inbound Logistics</h4>
+                    <p class="text-gray-600 ml-6">Receiving raw materials from suppliers</p>
+                    <ul class="text-gray-500 text-sm ml-6 mt-1 space-y-1">
+                        <li>- Supplier coordination</li>
+                        <li>- Unloading & inspection</li>
+                        <li>- Put-away to storage</li>
+                    </ul>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">2. Production Supply</h4>
+                    <p class="text-gray-600 ml-6">Moving materials to production lines</p>
+                    <ul class="text-gray-500 text-sm ml-6 mt-1 space-y-1">
+                        <li>- Material requisitions</li>
+                        <li>- Line-side inventory</li>
+                        <li>- Kanban replenishment</li>
+                    </ul>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">3. Outbound Logistics</h4>
+                    <p class="text-gray-600 ml-6">Shipping finished products to customers</p>
+                    <ul class="text-gray-500 text-sm ml-6 mt-1 space-y-1">
+                        <li>- Order picking</li>
+                        <li>- Packing & labeling</li>
+                        <li>- Carrier coordination</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <h4 class="font-bold text-blue-700 mb-2">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Key Performance Indicators
+                </h4>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600">98.5%</div>
+                        <div class="text-xs text-gray-600">Inventory Accuracy</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600">24h</div>
+                        <div class="text-xs text-gray-600">Order Processing Time</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600">99.2%</div>
+                        <div class="text-xs text-gray-600">On-Time Shipments</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600">5.8%</div>
+                        <div class="text-xs text-gray-600">Warehouse Capacity Used</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quality Procedures Modal -->
+    <div id="qualityModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('qualityModal')">&times;</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-clipboard-check mr-2 text-purple-500"></i>
+                Quality Control Procedures
+            </h2>
+            
+            <div class="bg-gray-50 p-6 rounded-lg mb-6">
+                <h3 class="text-lg font-bold text-gray-700 mb-3">Quality Control Process</h3>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">1. Incoming Material Inspection</h4>
+                    <p class="text-gray-600 ml-6">All raw materials checked against specifications</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">2. In-Process Quality Checks</h4>
+                    <p class="text-gray-600 ml-6">Random sampling during production</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">3. Final Product Inspection</h4>
+                    <p class="text-gray-600 ml-6">100% visual inspection, sample testing</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">4. Packaging Verification</h4>
+                    <p class="text-gray-600 ml-6">Confirm correct packaging/labeling</p>
+                </div>
+                
+                <div class="process-step">
+                    <h4 class="font-semibold text-gray-800">5. Documentation & Traceability</h4>
+                    <p class="text-gray-600 ml-6">Complete quality records for each batch</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Common Quality Issues</h3>
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <ul class="text-gray-600 space-y-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-times-circle text-red-500 mt-1 mr-2"></i>
+                                <span>Dimensional inaccuracies</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-times-circle text-red-500 mt-1 mr-2"></i>
+                                <span>Surface defects (scratches, dents)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-times-circle text-red-500 mt-1 mr-2"></i>
+                                <span>Material contamination</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-times-circle text-red-500 mt-1 mr-2"></i>
+                                <span>Incorrect labeling</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-times-circle text-red-500 mt-1 mr-2"></i>
+                                <span>Packaging defects</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Corrective Actions</h3>
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <ul class="text-gray-600 space-y-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Root cause analysis</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Process adjustments</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Operator retraining</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Supplier quality meetings</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Preventive maintenance</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                <h4 class="font-bold text-purple-700 mb-2">
+                    <i class="fas fa-certificate mr-1"></i>
+                    Quality Certifications
+                </h4>
+                <div class="flex flex-wrap gap-3">
+                    <span class="px-3 py-1 bg-white rounded-full text-sm font-medium text-purple-700 border border-purple-200">ISO 9001:2015</span>
+                    <span class="px-3 py-1 bg-white rounded-full text-sm font-medium text-purple-700 border border-purple-200">IATF 16949</span>
+                    <span class="px-3 py-1 bg-white rounded-full text-sm font-medium text-purple-700 border border-purple-200">ISO 14001</span>
+                    <span class="px-3 py-1 bg-white rounded-full text-sm font-medium text-purple-700 border border-purple-200">Customer-Specific</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Purchase Orders Modal -->
+    <div id="poModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('poModal')">&times;</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-file-invoice-dollar mr-2 text-yellow-500"></i>
+                Purchase Order Management
+            </h2>
+            
+            <div class="bg-gray-50 p-6 rounded-lg mb-6">
+                <h3 class="text-lg font-bold text-gray-700 mb-3">PO Processing Workflow</h3>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">1. PO Receipt</h4>
+                    <p class="text-gray-600 ml-6">Customer PO received via email/EDI</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">2. Order Entry</h4>
+                    <p class="text-gray-600 ml-6">PO details entered into ERP system</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">3. Order Verification</h4>
+                    <p class="text-gray-600 ml-6">Confirm specifications, quantities, dates</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">4. Production Scheduling</h4>
+                    <p class="text-gray-600 ml-6">Allocate production capacity</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-connector"></div>
+                    <h4 class="font-semibold text-gray-800">5. Material Procurement</h4>
+                    <p class="text-gray-600 ml-6">Order required raw materials</p>
+                </div>
+                
+                <div class="process-step">
+                    <h4 class="font-semibold text-gray-800">6. Order Acknowledgment</h4>
+                    <p class="text-gray-600 ml-6">Send confirmation to customer</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Key PO Information</h3>
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <ul class="text-gray-600 space-y-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-hashtag text-blue-500 mt-1 mr-2"></i>
+                                <span>PO number & date</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-barcode text-green-500 mt-1 mr-2"></i>
+                                <span>Part numbers & descriptions</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-boxes text-yellow-500 mt-1 mr-2"></i>
+                                <span>Quantities & units of measure</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-calendar-alt text-red-500 mt-1 mr-2"></i>
+                                <span>Requested delivery dates</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-truck text-purple-500 mt-1 mr-2"></i>
+                                <span>Shipping instructions</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">PO Tracking</h3>
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <ul class="text-gray-600 space-y-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-clipboard-list text-blue-500 mt-1 mr-2"></i>
+                                <span>Order status dashboard</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-exclamation-triangle text-yellow-500 mt-1 mr-2"></i>
+                                <span>Potential delay alerts</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-shipping-fast text-green-500 mt-1 mr-2"></i>
+                                <span>Shipment tracking</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-file-invoice text-purple-500 mt-1 mr-2"></i>
+                                <span>Documentation management</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Operational Challenges Modal -->
+    <div id="challengesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('challengesModal')">&times;</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-exclamation-triangle mr-2 text-red-500"></i>
+                Operational Challenges
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Production Delays</h3>
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <ul class="text-gray-600 space-y-3">
+                            <li>
+                                <div class="font-medium">Equipment Breakdowns</div>
+                                <div class="text-sm text-gray-500">Unplanned maintenance stops production</div>
+                            </li>
+                            <li>
+                                <div class="font-medium">Material Shortages</div>
+                                <div class="text-sm text-gray-500">Supplier delays impact production schedule</div>
+                            </li>
+                            <li>
+                                <div class="font-medium">Quality Issues</div>
+                                <div class="text-sm text-gray-500">Rework required slows throughput</div>
+                            </li>
+                            <li>
+                                <div class="font-medium">Staffing Challenges</div>
+                                <div class="text-sm text-gray-500">Absenteeism affects line productivity</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Staff Issues</h3>
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <ul class="text-gray-600 space-y-3">
+                            <li>
+                                <div class="font-medium">Skill Gaps</div>
+                                <div class="text-sm text-gray-500">New hires require extensive training</div>
+                            </li>
+                            <li>
+                                <div class="font-medium">Turnover</div>
+                                <div class="text-sm text-gray-500">High attrition in production roles</div>
+                            </li>
+                            <li>
+                                <div class="font-medium">Communication</div>
+                                <div class="text-sm text-gray-500">Language barriers in multinational teams</div>
+                            </li>
+                            <li>
+                                <div class="font-medium">Shift Coordination</div>
+                                <div class="text-sm text-gray-500">Handovers between shifts sometimes incomplete</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-lg font-bold text-gray-700 mb-3">Mitigation Strategies</h3>
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="text-blue-500 text-2xl mb-2">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-700 mb-1">Preventive Maintenance</h4>
+                        <p class="text-gray-600 text-sm">Scheduled equipment checks to reduce breakdowns</p>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="text-green-500 text-2xl mb-2">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-700 mb-1">Cross-Training</h4>
+                        <p class="text-gray-600 text-sm">Multiple staff trained on critical operations</p>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="text-purple-500 text-2xl mb-2">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-700 mb-1">Safety Stock</h4>
+                        <p class="text-gray-600 text-sm">Buffer inventory for critical materials</p>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="text-yellow-500 text-2xl mb-2">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-700 mb-1">Performance Metrics</h4>
+                        <p class="text-gray-600 text-sm">Real-time monitoring of production KPIs</p>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="text-red-500 text-2xl mb-2">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-700 mb-1">Daily Huddles</h4>
+                        <p class="text-gray-600 text-sm">Quick team meetings to address issues</p>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="text-indigo-500 text-2xl mb-2">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-700 mb-1">Supplier Partnerships</h4>
+                        <p class="text-gray-600 text-sm">Close collaboration with key suppliers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meetings & Communication Modal -->
+    <div id="meetingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('meetingsModal')">&times;</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-users mr-2 text-indigo-500"></i>
+                Meetings & Communication
+            </h2>
+            
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-gray-700 mb-3">Meeting Types</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="meeting-card bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="flex items-center mb-2">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-sun text-blue-500"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-700">Daily Production Meeting</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm">15-minute stand-up to review daily targets and issues</p>
+                    </div>
+                    
+                    <div class="meeting-card bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="flex items-center mb-2">
+                            <div class="bg-green-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-calendar-week text-green-500"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-700">Weekly Planning Meeting</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm">Review upcoming orders, capacity, and resource needs</p>
+                    </div>
+                    
+                    <div class="meeting-card bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="flex items-center mb-2">
+                            <div class="bg-purple-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-chart-pie text-purple-500"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-700">Monthly Performance Review</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm">Analyze KPIs, quality metrics, and improvement plans</p>
+                    </div>
+                    
+                    <div class="meeting-card bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="flex items-center mb-2">
+                            <div class="bg-red-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-exclamation-circle text-red-500"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-700">Quality Incident Meeting</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm">Address specific quality issues and corrective actions</p>
+                    </div>
+                    
+                    <div class="meeting-card bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="flex items-center mb-2">
+                            <div class="bg-yellow-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-truck text-yellow-500"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-700">Supplier Review</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm">Discuss performance with key suppliers</p>
+                    </div>
+                    
+                    <div class="meeting-card bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="flex items-center mb-2">
+                            <div class="bg-indigo-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-lightbulb text-indigo-500"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-700">Continuous Improvement</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm">Brainstorm process improvement ideas</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Common Meeting Phrases</h3>
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <ul class="text-gray-600 space-y-3">
+                            <li>
+                                <div class="font-medium">"Let's review the current status of..."</div>
+                                <div class="text-sm text-gray-500">Opening discussion on a specific topic</div>
+                            </li>
+                            <li>
+                                <div class="font-medium">"What's causing the bottleneck in...?"</div>
+                                <div class="text-sm text-gray-500">Identifying production constraints</div>
+                            </li>
+                            <li>
+                                <div class="font-medium">"We need to prioritize..."</div>
+                                <div class="text-sm text-gray-500">Focusing on critical issues</div>
+                            </li>
+                            <li>
+                                <div class="font-medium">"The root cause appears to be..."</div>
+                                <div class="text-sm text-gray-500">Problem analysis</div>
+                            </li>
+                            <li>
+                                <div class="font-medium">"Who will take ownership of...?"</div>
+                                <div class="text-sm text-gray-500">Assigning action items</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Communication Channels</h3>
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <ul class="text-gray-600 space-y-3">
+                            <li class="flex items-start">
+                                <i class="fas fa-desktop text-blue-500 mt-1 mr-2"></i>
+                                <span>ERP system notifications</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-mobile-alt text-green-500 mt-1 mr-2"></i>
+                                <span>Team messaging app (Slack/Teams)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-clipboard-list text-yellow-500 mt-1 mr-2"></i>
+                                <span>Production floor whiteboards</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-envelope text-red-500 mt-1 mr-2"></i>
+                                <span>Email for formal communications</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-print text-purple-500 mt-1 mr-2"></i>
+                                <span>Daily production reports</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
